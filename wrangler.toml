@@ -1,0 +1,12 @@
+name = "nibagendas-router"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+account_id = "55a192cb7366e3df91f475f84bede5d4"
+
+[[routes]]
+pattern = "nibagendas.com/*"
+zone_name = "nibagendas.com"
+
+[[routes]]
+pattern = "www.nibagendas.com/*"
+zone_name = "nibagendas.com"
