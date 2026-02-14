@@ -1,6 +1,6 @@
 // NIBAgendas Router - Roteia requisições baseado no path
 
-const API_HOST = 'nibagendas-api.command-systems.workers.dev';
+const API_HOST = 'api.nibagendas.com';
 
 const PAGES_ROUTES = {
   '/administracao': 'nibagendas-adm.pages.dev',
