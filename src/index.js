@@ -1,7 +1,5 @@
 // NIBAgendas Router - Roteia requisições baseado no path
 
-const API_HOST = 'api.nibagendas.com';
-
 const PAGES_ROUTES = {
   '/administracao': 'nibagendas-adm.pages.dev',
   '/paciente': 'nibagendas-paciente.pages.dev',
@@ -15,20 +13,10 @@ export default {
     const path = url.pathname;
 
     // === API PROXY ===
-    // Todas as requisições /api/* vão para o Worker da API
+    // Todas as requisições /api/* vão para o Worker da API via Service Binding
     if (path.startsWith('/api')) {
-      const apiUrl = new URL(request.url);
-      apiUrl.hostname = API_HOST;
-      // Mantém o path completo incluindo /api
-      apiUrl.pathname = path;
-
-      const apiRequest = new Request(apiUrl.toString(), {
-        method: request.method,
-        headers: request.headers,
-        body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : null
-      });
-
-      return fetch(apiRequest);
+      // Usa Service Binding para chamar o Worker da API diretamente
+      return env.API.fetch(request);
     }
 
     // === PAGES PROXY ===

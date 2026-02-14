@@ -3,6 +3,12 @@ main = "src/index.js"
 compatibility_date = "2024-01-01"
 account_id = "55a192cb7366e3df91f475f84bede5d4"
 
+# Service Binding para o Worker da API
+[[services]]
+binding = "API"
+service = "nibagendas-api"
+environment = "production"
+
 [[routes]]
 pattern = "nibagendas.com/*"
 zone_name = "nibagendas.com"
