@@ -13,8 +13,8 @@ export default {
     const path = url.pathname;
 
     // === API PROXY ===
-    // Todas as requisições /api/* vão para o Worker da API via Service Binding
-    if (path.startsWith('/api')) {
+    // Todas as requisições /api/* e /auth/* vão para o Worker da API via Service Binding
+    if (path.startsWith('/api') || path.startsWith('/auth')) {
       // Usa Service Binding para chamar o Worker da API diretamente
       return env.API.fetch(request);
     }
@@ -61,9 +61,9 @@ export default {
     }
 
     // === ROOT REDIRECT ===
-    // Redireciona a raiz para /administracao
+    // Redireciona a raiz para /paciente
     if (path === '/' || path === '') {
-      return Response.redirect(url.origin + '/administracao', 302);
+      return Response.redirect(url.origin + '/paciente', 302);
     }
 
     // === 404 ===
@@ -196,8 +196,8 @@ export default {
         <h1>Erro 404, Página não encontrada</h1>
         <p>Ops! A página que você está procurando não existe ou foi movida. Verifique o URL ou volte para a área segura.</p>
         
-        <a href="/administracao" class="btn">
-            Voltar para Administração
+        <a href="/paciente" class="btn">
+            Voltar para Início
         </a>
     </div>
 </body>
