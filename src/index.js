@@ -60,6 +60,24 @@ export default {
       }
     }
 
+    // === WELL-KNOWN (Security.txt - RFC 9116) ===
+    if (path === '/.well-known/security.txt' || path === '/security.txt') {
+      const securityTxt = [
+        'Contact: mailto:command_systems@commandsystems.com.br',
+        'Expires: 2027-02-23T00:00:00.000Z',
+        'Preferred-Languages: pt, en',
+        'Canonical: https://nibagendas.com/.well-known/security.txt',
+      ].join('\n') + '\n';
+
+      return new Response(securityTxt, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'public, max-age=86400',
+        },
+      });
+    }
+
     // === ROOT REDIRECT ===
     // Redireciona a raiz para /paciente
     if (path === '/' || path === '') {
