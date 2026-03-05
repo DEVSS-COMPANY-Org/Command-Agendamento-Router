@@ -28,7 +28,7 @@ export default {
     if (path.startsWith('/api') || path.startsWith('/auth')) {
       const explicitEnv = url.searchParams.get('__env');
       const referer = request.headers.get('Referer') || '';
-      const isDevOrigin = explicitEnv === 'dev' || referer.includes('dev_');
+      const isDevOrigin = explicitEnv === 'dev' || referer.includes('_dev');
 
       // Se a requisição vem de um frontend _dev, usa o Worker da API DEV (databases separados)
       if (isDevOrigin && env.API_DEV) {
