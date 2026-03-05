@@ -26,8 +26,9 @@ export default {
     // === API PROXY ===
     // Requisições /api/* e /auth/* — detecta se vem de um frontend _dev
     if (path.startsWith('/api') || path.startsWith('/auth')) {
+      const explicitEnv = url.searchParams.get('__env');
       const referer = request.headers.get('Referer') || '';
-      const isDevOrigin = referer.includes('_dev');
+      const isDevOrigin = explicitEnv === 'dev' || referer.includes('dev_');
 
       // Se a requisição vem de um frontend _dev, usa o Worker da API DEV (databases separados)
       if (isDevOrigin && env.API_DEV) {
