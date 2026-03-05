@@ -1,11 +1,22 @@
 // NIBAgendas Router - Roteia requisições baseado no path
 
+// Rotas de PRODUÇÃO (branch main)
 const PAGES_ROUTES = {
   '/administracao': 'nibagendas-adm.pages.dev',
   '/paciente': 'nibagendas-paciente.pages.dev',
   '/medico': 'nibagendas-medico.pages.dev',
   '/documentacao': 'nibagendas-docs.pages.dev'
 };
+
+// Rotas de DESENVOLVIMENTO (branch dev) - Preview Deployments do Cloudflare Pages
+const DEV_PAGES_ROUTES = {
+  '/administracao_dev': 'dev.nibagendas-adm.pages.dev',
+  '/paciente_dev': 'dev.nibagendas-paciente.pages.dev',
+  '/medico_dev': 'dev.nibagendas-medico.pages.dev',
+};
+
+// Combinar todas as rotas (DEV primeiro para match mais específico com _dev)
+const ALL_ROUTES = { ...DEV_PAGES_ROUTES, ...PAGES_ROUTES };
 
 export default {
   async fetch(request, env, ctx) {
@@ -19,28 +30,28 @@ export default {
       return env.API.fetch(request);
     }
 
-    // === PAGES PROXY ===
+    // === PAGES PROXY (Produção + Dev) ===
     // Roteia para os diferentes Pages baseado no path
-    for (const [routePath, targetHost] of Object.entries(PAGES_ROUTES)) {
+    for (const [routePath, targetHost] of Object.entries(ALL_ROUTES)) {
       if (path === routePath || path.startsWith(routePath + '/')) {
         // Remove o prefixo da rota do path
         let targetPath = path.replace(routePath, '') || '/';
-        
+
         // Se for um arquivo estático (tem extensão), mantém o path
         // Se não tiver extensão, serve o index.html (SPA)
         const hasExtension = /\.[a-zA-Z0-9]+$/.test(targetPath);
-        
+
         const targetUrl = new URL(request.url);
         targetUrl.hostname = targetHost;
         targetUrl.pathname = targetPath;
-        
+
         const proxyRequest = new Request(targetUrl.toString(), {
           method: request.method,
           headers: request.headers
         });
-        
+
         let response = await fetch(proxyRequest);
-        
+
         // Se não encontrou e não é arquivo estático, tenta servir index.html (SPA routing)
         if (response.status === 404 && !hasExtension) {
           targetUrl.pathname = '/';
@@ -50,7 +61,7 @@ export default {
           });
           response = await fetch(spaRequest);
         }
-        
+
         // Clona a resposta para poder modificar headers se necessário
         return new Response(response.body, {
           status: response.status,
@@ -220,7 +231,7 @@ export default {
     </div>
 </body>
 </html>
-    `, { 
+    `, {
       status: 404,
       headers: { 'Content-Type': 'text/html' }
     });
