@@ -24,9 +24,16 @@ export default {
     const path = url.pathname;
 
     // === API PROXY ===
-    // Todas as requisições /api/* e /auth/* vão para o Worker da API via Service Binding
+    // Requisições /api/* e /auth/* — detecta se vem de um frontend _dev
     if (path.startsWith('/api') || path.startsWith('/auth')) {
-      // Usa Service Binding para chamar o Worker da API diretamente
+      const referer = request.headers.get('Referer') || '';
+      const isDevOrigin = referer.includes('_dev');
+
+      // Se a requisição vem de um frontend _dev, usa o Worker da API DEV (databases separados)
+      if (isDevOrigin && env.API_DEV) {
+        return env.API_DEV.fetch(request);
+      }
+      // Senão, usa o Worker da API de produção
       return env.API.fetch(request);
     }
 
