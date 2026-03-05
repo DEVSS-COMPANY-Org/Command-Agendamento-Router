@@ -27,21 +27,8 @@ export default {
     // Requisições /api/* e /auth/* — detecta se vem de um frontend _dev
     if (path.startsWith('/api') || path.startsWith('/auth')) {
       const explicitEnv = url.searchParams.get('__env');
-      const traceId = url.searchParams.get('__trace');
       const referer = request.headers.get('Referer') || '';
       const isDevOrigin = explicitEnv === 'dev' || referer.includes('_dev');
-      const targetBinding = (isDevOrigin && env.API_DEV) ? 'API_DEV' : 'API';
-
-      if (traceId || path === '/api/events/connect') {
-        console.log('[router-api-proxy]', JSON.stringify({
-          path,
-          traceId: traceId || null,
-          explicitEnv: explicitEnv || null,
-          hasReferer: Boolean(referer),
-          isDevOrigin,
-          targetBinding
-        }));
-      }
 
       // Se a requisição vem de um frontend _dev, usa o Worker da API DEV (databases separados)
       if (isDevOrigin && env.API_DEV) {
